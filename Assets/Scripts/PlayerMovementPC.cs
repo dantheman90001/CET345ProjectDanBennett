@@ -14,21 +14,20 @@ public class PlayerMovementPC : MonoBehaviour
     [SerializeField] private float gravity = -0.01f;
     [SerializeField] private bool Grounded;
 
-    private Animator animator;
+
 
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
-    }
 
-   
+
+    }
 
     // Update is called once per frame
     void Update()
     {
-        Grounded = controller.isGrounded;
+            Grounded = controller.isGrounded;
 
         if (Grounded && jumpVelocity.y < 0)
         {
@@ -40,18 +39,7 @@ public class PlayerMovementPC : MonoBehaviour
 
         moveDirection = new Vector3(horizontal, 0, vertical);
 
-        if(moveDirection == Vector3.zero)
-        {
-            animator.SetFloat("Speed", 0);
-        }
-        else if (!Input.GetKey(KeyCode.LeftShift))
-        {
-            animator.SetFloat("Speed", 0.5f);
-        }
-        else
-        {
-            animator.SetFloat("Speed", 1);
-        }
+        
 
         moveDirection *= speed;
 

@@ -1,53 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Scripting.APIUpdating;
 
 
-[RequireComponent(typeof(CharacterController))]
+
 public class GamepadPlayerMovement : MonoBehaviour
 {
+    PlayerMovement playermovement;
+
+    Vector3 movement;
     
 
-    private CharacterController controller;
-
-    private float speed = 5f;
-
-
-    private Vector2 playerMovementInput;
-
-    private void Awake()
-    {
-        controller = GetComponent<CharacterController>();
-    }
-    
+    public float speed = 5f;
    
+    
 
-    public void Jump(InputAction.CallbackContext context)
+    void Awake()
     {
+        playermovement = new PlayerMovement();
+        
+        playermovement.Gameplay.Jump.performed += ctx => Jump();
+
+        playermovement.Gameplay.Movement.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        playermovement.Gameplay.Movement.canceled += ctx => movement = Vector3.zero;
+
        
+       
+    }
+
+    void Jump()
+    {
+        //transform.Translate(Vector3.up * 5f);
     }
 
     void Update()
     {
-        MovePlayer();
-   
+        Vector3 m = new Vector3(movement.x, 0, movement.y) * speed * Time.deltaTime;
+        transform.Translate(m, Space.World);
+
+       
     }
 
-    
-
-
-    void MovePlayer()
+    void OnEnable()
     {
-        Vector3 movement = new Vector3(playerMovementInput.x, 0.0f, playerMovementInput.y);
-
-        controller.SimpleMove(movement * speed);
+        playermovement.Gameplay.Enable();
     }
 
-    void OnMove(InputValue iv)
+    void OnDisable()
     {
-        playerMovementInput = iv.Get<Vector2>();
+        playermovement.Gameplay.Disable();
     }
 
-    
 }

@@ -25,7 +25,7 @@ public class EnemyChasesPlayerWhenNearby : MonoBehaviour
             dist = Vector3.Distance(player.position, transform.position);
             if (dist > howClose)
             {
-                rigidbody.velocity = Vector3.zero;
+                //rigidbody.velocity = Vector3.zero;
             }
             else if (dist <= howClose && dist > 2f)
             {
