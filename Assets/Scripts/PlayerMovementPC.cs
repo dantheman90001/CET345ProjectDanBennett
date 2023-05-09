@@ -6,55 +6,52 @@ using UnityEngine;
 public class PlayerMovementPC : MonoBehaviour
 {
     [SerializeField] CharacterController controller;
-    [SerializeField] private Vector3 jumpVelocity;
     [SerializeField] private Vector3 moveDirection;
     [SerializeField] private int speed = 5;
 
     [SerializeField] private float jumpHeight = 1.5f;
-    [SerializeField] private float gravity = -0.01f;
+    [SerializeField] private float gravity = 20f;
     [SerializeField] private bool Grounded;
 
-
+    [SerializeField] private Transform PlayerCamera;
+    public float mouseSensitivity = 2f;
+    public float lookUpClamp = -30f;
+    public float lookDownClamp = 60;
+    float rotateX, rotateY;
 
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
-            Grounded = controller.isGrounded;
+        Grounded = controller.isGrounded;
 
-        if (Grounded && jumpVelocity.y < 0)
+        if (Grounded)
         {
-            jumpVelocity.y = 0f;
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection *= speed;
+
+            if (Input.GetButton("Jump"))
+            {
+                moveDirection.y = jumpHeight;
+            }
         }
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        moveDirection = new Vector3(horizontal, 0, vertical);
-
-        
-
-        moveDirection *= speed;
-
-        if ((moveDirection.x != 0) || (moveDirection.z !=0))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), Time.deltaTime);
-        }
-
+        moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
 
-        if (Grounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            jumpVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravity);
-        }
-        jumpVelocity.y += gravity * Time.deltaTime;
-        controller.Move(jumpVelocity * Time.deltaTime);
+
+        rotateX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        rotateY -= Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        rotateY = Mathf.Clamp(rotateY, lookUpClamp, lookDownClamp);
+        transform.Rotate(0f, rotateX, 0f);
+
+        PlayerCamera.localRotation = Quaternion.Euler(rotateY, 0f, 0f);
     }
 }

@@ -9,7 +9,13 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class GamepadPlayerMovement : MonoBehaviour
 {
+    public CharacterController controller;
     PlayerMovement playermovement;
+    [SerializeField] private Vector3 jumpVelocity;
+    [SerializeField] private float jumpHeight = 1.5f;
+    [SerializeField] private float gravity = -0.01f;
+    [SerializeField] private bool Grounded;
+    [SerializeField] private Vector3 moveDirection;
 
     Vector3 movement;
     
@@ -38,8 +44,12 @@ public class GamepadPlayerMovement : MonoBehaviour
 
     void Update()
     {
+        
+
+        moveDirection *= speed;
+
         Vector3 m = new Vector3(movement.x, 0, movement.y) * speed * Time.deltaTime;
-        transform.Translate(m, Space.World);
+        controller.Move(jumpVelocity * Time.deltaTime);
 
        
     }

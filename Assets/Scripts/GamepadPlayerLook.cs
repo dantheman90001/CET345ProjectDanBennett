@@ -17,13 +17,14 @@ public class GamepadPlayerLook : MonoBehaviour
         playerMovement = new PlayerMovement();
 
         playerMovement.Gameplay.Look.performed += ctx => look = ctx.ReadValue<Vector2>();
-        playerMovement.Gameplay.Look.performed += ctx => look = Vector3.zero;
+        playerMovement.Gameplay.Look.canceled += ctx => look = Vector3.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 r = new Vector3(-look.y, 0, -look.x) * rotateSpeed * Time.deltaTime;
+        Debug.Log("Rotate : " + r);
         transform.Rotate(r, Space.World);
     }
 
