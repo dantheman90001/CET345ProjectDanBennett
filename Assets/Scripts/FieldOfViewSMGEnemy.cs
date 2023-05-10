@@ -5,6 +5,7 @@ using UnityEngine;
 public class FieldOfViewSMGEnemy : MonoBehaviour
 {
     public float radius;
+    [Range(0, 360)]
     public float angle;
 
     public GameObject playerRef;
@@ -44,12 +45,26 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
             {
+                float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
+                if(!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
+                {
+                    // When it spots the player
+                    canSeePlayer = true;
+                }
+                else
+                {
+                    canSeePlayer = false;
+                }
             }
             else
             {
                 canSeePlayer = false;
             }
+        }
+        else if (canSeePlayer)
+        {
+            canSeePlayer = false;
         }
     }
 }

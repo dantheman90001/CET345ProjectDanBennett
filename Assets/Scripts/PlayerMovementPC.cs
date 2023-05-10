@@ -36,6 +36,12 @@ public class PlayerMovementPC : MonoBehaviour
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
 
+            if(Input.GetButton("Fire3"))
+            {
+                Debug.Log("Sprinting");
+                moveDirection *= speed * 0.5f;
+            }
+
             if (Input.GetButton("Jump"))
             {
                 moveDirection.y = jumpHeight;

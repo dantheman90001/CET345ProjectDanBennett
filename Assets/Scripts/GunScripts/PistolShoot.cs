@@ -1,24 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
-using UnityEngine.Scripting.APIUpdating;
 
 public class PistolShoot : MonoBehaviour
 {
 
-    PlayerMovement playerMovement;
+
     public float pistolDamage = 10f;
     public float range = 20f;
-    public float fireRate = 1f;
-    public bool canFire;
-    public GameObject pistolStart;
-     void Awake()
+    public float fireRate = 2f;
+    public float nextFire;
+    public Transform pistolStart;
+    private WaitForSeconds shotDuration = new WaitForSeconds(0.5f);
+    public LineRenderer laserLine;
+    IEnumerator ShootDelay()
     {
-        playerMovement = new PlayerMovement();
+        Debug.Log("Delaying Shot");
+        laserLine.enabled = true;
+        yield return shotDuration;
+        laserLine.enabled = false;
+    }
 
-        playerMovement.Gameplay.Shoot.performed += ctx => Shoot();
+     void Start()
+    {
+        laserLine = GetComponent<LineRenderer>();
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+                Shoot();
+            StartCoroutine(ShootDelay());
+
+        }
     }
 
     void Shoot()
@@ -26,40 +42,27 @@ public class PistolShoot : MonoBehaviour
         Debug.Log("Pistol Shooting!");
 
         RaycastHit hit;
-        if(Physics.Raycast(pistolStart.transform.position, pistolStart.transform.forward, out hit, range)&&canFire == true)
+        laserLine.SetPosition(0, pistolStart.position);
+
+        if (Physics.Raycast(pistolStart.transform.position, pistolStart.transform.forward, out hit, range))
         {
+            laserLine.SetPosition(1, hit.point);
+            Debug.DrawLine(pistolStart.transform.position, pistolStart.transform.forward, Color.black);
             Debug.Log(hit.transform.name);
-            canFire = false;
-            StartCoroutine(ShootDelay());
+
+
             SMGEnemyHealth sMGEnemyHealth = hit.transform.GetComponent<SMGEnemyHealth>();
-            
+
             if (sMGEnemyHealth != null)
             {
                 sMGEnemyHealth.TakeSMGEnemyDamage(pistolDamage);
             }
 
-           
+
         }
-    }
-
-    IEnumerator ShootDelay()
-    {
-        yield return new WaitForSeconds(fireRate);
-        canFire = true;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void OnEnable()
-    {
-        playerMovement.Gameplay.Enable();
-    }
-
-    void OnDisable()
-    {
-        playerMovement.Gameplay.Disable();
+        else
+        {
+            laserLine.SetPosition(1, pistolStart.transform.position + (pistolStart.transform.forward * range));
+        }
     }
 }

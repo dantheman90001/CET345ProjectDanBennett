@@ -1,30 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
-using UnityEngine.Scripting.APIUpdating;
+
 
 
 public class SMGShoot : MonoBehaviour
 {
-    PlayerMovement playerMovement;
+   
 
     public float SMGDamage = 20f;
     public float range = 60f;
 
     public GameObject SMGStart;
 
-    void Awake()
-    {
-        playerMovement = new PlayerMovement();
-
-        playerMovement.Gameplay.Shoot.performed += ctx => Shoot();
-    }
-    // Update is called once per frame
+   
     void Update()
     {
-       
+       if (Input.GetButton("Fire1"))
+        {
+            Shoot();
+        }
     }
 
     void Shoot()
@@ -44,13 +39,5 @@ public class SMGShoot : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        playerMovement.Gameplay.Enable();
-    }
-
-    void OnDisable()
-    {
-        playerMovement.Gameplay.Disable();
-    }
+    
 }
