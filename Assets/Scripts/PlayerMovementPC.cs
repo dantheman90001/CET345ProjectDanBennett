@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using TMPro;
 
-[RequireComponent (typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovementPC : MonoBehaviour
 {
     [SerializeField] CharacterController controller;
@@ -19,9 +21,19 @@ public class PlayerMovementPC : MonoBehaviour
     public float lookDownClamp = 60;
     float rotateX, rotateY;
 
+    public int maxStamina = 100;
+    public int currentStamina;
+    public TMP_Text staminaUI;
+
+    private WaitForSeconds regenStaminaTick = new WaitForSeconds(0.1f);
+    private Coroutine regenStamina;
+    public StaminaBar staminaBar;
+
     // Start is called before the first frame update
     void Start()
     {
+        currentStamina = maxStamina;
+        staminaBar.SetMaxStamina(maxStamina);
         controller = GetComponent<CharacterController>();
     }
 
@@ -36,11 +48,13 @@ public class PlayerMovementPC : MonoBehaviour
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
 
-            if(Input.GetButton("Fire3"))
+            if (Input.GetButton("Fire3"))
             {
                 Debug.Log("Sprinting");
                 moveDirection *= speed * 0.5f;
+                DecreaseStamina(10);
             }
+           
 
             if (Input.GetButton("Jump"))
             {
@@ -59,5 +73,42 @@ public class PlayerMovementPC : MonoBehaviour
         transform.Rotate(0f, rotateX, 0f);
 
         PlayerCamera.localRotation = Quaternion.Euler(rotateY, 0f, 0f);
+
+        maxStamina = Mathf.Clamp(maxStamina, 1, 100);
+        if (currentStamina > maxStamina)
+        {
+            currentStamina = 100;
+        }
+    }
+
+    public void DecreaseStamina(int decrease)
+    {
+        currentStamina -= decrease;
+        staminaBar.SetStamina(currentStamina);
+
+        if(currentStamina != 0)
+        {
+            Debug.Log("Regen Stamina!");
+            StopCoroutine(regenStamina);
+            moveDirection *= speed;
+        }
+        regenStamina = StartCoroutine(RegenStamina());
+        if (currentStamina <= 0)
+        {
+
+        }
+    }
+
+    private IEnumerator RegenStamina()
+    {
+        yield return new WaitForSeconds(3);
+
+        while(currentStamina < maxStamina)
+        {
+            currentStamina += maxStamina / 100;
+            staminaBar.SetStamina(currentStamina);
+            yield return regenStaminaTick;
+        }
+        regenStamina = null;
     }
 }

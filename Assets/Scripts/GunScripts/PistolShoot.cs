@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PistolShoot : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class PistolShoot : MonoBehaviour
     public Transform pistolStart;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.5f);
     public LineRenderer laserLine;
+    public bool isFiring;
+    public int pistolAmmo;
+    public TMP_Text pistolAmmoUI;
     IEnumerator ShootDelay()
     {
         Debug.Log("Delaying Shot");
@@ -28,10 +32,14 @@ public class PistolShoot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        pistolAmmoUI.text = pistolAmmo.ToString();
+        if (Input.GetButton("Fire1") && Time.time > nextFire && !isFiring && pistolAmmo > 0)
         {
             nextFire = Time.time + fireRate;
-                Shoot();
+            isFiring = true;
+            Shoot();
+            pistolAmmo--;
+            isFiring = false;
             StartCoroutine(ShootDelay());
 
         }

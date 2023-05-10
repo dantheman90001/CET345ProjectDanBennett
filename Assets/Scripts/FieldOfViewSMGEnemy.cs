@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfViewSMGEnemy : MonoBehaviour
 {
@@ -16,10 +17,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
     public bool canSeePlayer;
 
+    public Transform player;
+    public NavMeshAgent agent;
 
     private void Start()
     {
         playerRef = GameObject.FindGameObjectWithTag("Player");
+        agent = GetComponent<NavMeshAgent>();
         StartCoroutine(FOVRountine());
     }
 
@@ -51,10 +55,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
                 {
                     // When it spots the player
                     canSeePlayer = true;
+                    agent.SetDestination(player.position);
+                    transform.LookAt(player);
                 }
                 else
                 {
                     canSeePlayer = false;
+                    agent.enabled = false;
                 }
             }
             else
