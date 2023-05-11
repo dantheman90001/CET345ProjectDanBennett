@@ -14,6 +14,9 @@ public class PlayerMovementPC : MonoBehaviour
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 20f;
     [SerializeField] private bool Grounded;
+    [SerializeField] private bool canJump;
+    [SerializeField] private bool doubleJump;
+    
 
     [SerializeField] private Transform PlayerCamera;
     public float mouseSensitivity = 2f;
@@ -47,6 +50,8 @@ public class PlayerMovementPC : MonoBehaviour
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
+            doubleJump = true;
+            canJump = true;
 
             if (Input.GetButton("Fire3"))
             {
@@ -55,11 +60,21 @@ public class PlayerMovementPC : MonoBehaviour
                 DecreaseStamina(10);
             }
            
-
-            if (Input.GetButton("Jump"))
+            if (canJump == true)
             {
-                moveDirection.y = jumpHeight;
+                if (Input.GetButton("Jump"))
+                {
+                    moveDirection.y = jumpHeight;
+                    canJump = false;
+                }
+
+                if (Input.GetButton("Jump") && doubleJump == true)
+                {
+                    moveDirection.y = jumpHeight * 2;
+                    doubleJump = false;
+                }
             }
+            
         }
 
         moveDirection.y -= gravity * Time.deltaTime;

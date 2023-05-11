@@ -15,16 +15,36 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
     public LayerMask obstructionMask;
 
+
     public bool canSeePlayer;
 
     public Transform player;
     public NavMeshAgent agent;
 
+
+    public float enemySMGDamage = 20f;
+    public float range = 40f;
+    public Transform smgStart;
+    public LineRenderer laserLine;
+    public float fireRate = 2f;
+    public float nextFire;
+    public WaitForSeconds shotDuration = new WaitForSeconds(0.5f);
+    public bool isFiring;
+    
     private void Start()
     {
         playerRef = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         StartCoroutine(FOVRountine());
+        laserLine = GetComponent<LineRenderer>();
+
+    }
+
+    private IEnumerator shotDelay()
+    {
+        laserLine.enabled = true;
+        yield return shotDuration;
+        laserLine.enabled = false;
     }
 
     private IEnumerator FOVRountine()
@@ -38,6 +58,27 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
         }
     }
 
+    
+    void Shoot()
+    {
+        Debug.Log("Enemy Shooting!");
+        RaycastHit hit;
+        laserLine.SetPosition(0, smgStart.position);
+
+        if (Physics.Raycast(smgStart.transform.position, smgStart.transform.forward, out hit, range))
+        {
+            laserLine.SetPosition(1, hit.point);
+            Debug.DrawLine(smgStart.transform.position, smgStart.transform.forward, Color.white);
+            Debug.Log(hit.transform.name);
+
+            //ShieldBar shieldBar = hit.transform.GetComponent<ShieldBar>();
+
+        }
+        else
+        {
+            laserLine.SetPosition(1, smgStart.transform.position + (smgStart.transform.forward * range));
+        }
+    }
     private void FieldOfViewCheck()
     {
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, playerMask);
@@ -54,9 +95,19 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
                 if(!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
                 {
                     // When it spots the player
+                    
                     canSeePlayer = true;
                     agent.SetDestination(player.position);
                     transform.LookAt(player);
+                    if(Time.time > nextFire && !isFiring)
+                    {
+                        nextFire = Time.time + fireRate;
+                        isFiring = true;
+                        Shoot();
+                        isFiring = false;
+                        StartCoroutine(shotDelay());
+                    }
+                    
                 }
                 else
                 {

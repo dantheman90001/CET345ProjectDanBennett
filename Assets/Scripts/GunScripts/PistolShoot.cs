@@ -17,6 +17,8 @@ public class PistolShoot : MonoBehaviour
     public bool isFiring;
     public int pistolAmmo;
     public TMP_Text pistolAmmoUI;
+
+    
     IEnumerator ShootDelay()
     {
         Debug.Log("Delaying Shot");
@@ -28,6 +30,7 @@ public class PistolShoot : MonoBehaviour
      void Start()
     {
         laserLine = GetComponent<LineRenderer>();
+        
     }
     // Update is called once per frame
     void Update()
@@ -55,7 +58,9 @@ public class PistolShoot : MonoBehaviour
         if (Physics.Raycast(pistolStart.transform.position, pistolStart.transform.forward, out hit, range))
         {
             laserLine.SetPosition(1, hit.point);
+            
             Debug.DrawLine(pistolStart.transform.position, pistolStart.transform.forward, Color.black);
+
             Debug.Log(hit.transform.name);
 
 
