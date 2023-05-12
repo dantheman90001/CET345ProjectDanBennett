@@ -19,17 +19,21 @@ public class PlayerMovementPC : MonoBehaviour
     
 
     [SerializeField] private Transform PlayerCamera;
-    public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 200f;
     public float lookUpClamp = -30f;
     public float lookDownClamp = 60;
     float rotateX, rotateY;
 
+    public float sprintCooldown = 3;
+    public float sprintCooldownTimer = 0;
+    public float nextSprint;
+
     public int maxStamina = 100;
-    public int currentStamina;
+    public float currentStamina;
     public TMP_Text staminaUI;
 
-    private WaitForSeconds regenStaminaTick = new WaitForSeconds(0.1f);
-    private Coroutine regenStamina;
+    //private WaitForSeconds regenStaminaTick = new WaitForSeconds(0.1f);
+    //private Coroutine regenStamina;
     public StaminaBar staminaBar;
 
     // Start is called before the first frame update
@@ -44,6 +48,20 @@ public class PlayerMovementPC : MonoBehaviour
     void Update()
     {
         Grounded = controller.isGrounded;
+        if (sprintCooldownTimer > 0)
+        {
+            sprintCooldownTimer -= Time.deltaTime;
+        }
+        else if(sprintCooldownTimer <= 0 && currentStamina < maxStamina)
+        {
+            currentStamina += 30 * Time.deltaTime;
+            if (currentStamina >= maxStamina)
+            {
+                currentStamina = maxStamina;
+            }
+            staminaBar.SetStamina(currentStamina);
+        }
+
 
         if (Grounded)
         {
@@ -53,11 +71,16 @@ public class PlayerMovementPC : MonoBehaviour
             doubleJump = true;
             canJump = true;
 
-            if (Input.GetButton("Fire3"))
+            if (Input.GetButton("Fire3") && currentStamina > 0)
             {
+                sprintCooldownTimer = sprintCooldown;
                 Debug.Log("Sprinting");
-                moveDirection *= speed * 0.5f;
-                DecreaseStamina(10);
+                moveDirection *= 1.05f;
+                DecreaseStamina(30);
+            }
+            else if (currentStamina < maxStamina)
+            { 
+                
             }
            
             if (canJump == true)
@@ -96,34 +119,36 @@ public class PlayerMovementPC : MonoBehaviour
         }
     }
 
-    public void DecreaseStamina(int decrease)
+    public void DecreaseStamina(float decrease)
     {
-        currentStamina -= decrease;
+        currentStamina -= decrease * Time.deltaTime;
         staminaBar.SetStamina(currentStamina);
 
-        if(currentStamina != 0)
+        //regenStamina = StartCoroutine(RegenStamina());
+
+        if (currentStamina != 0)
         {
             Debug.Log("Regen Stamina!");
-            StopCoroutine(regenStamina);
+            //StopCoroutine(regenStamina);
             moveDirection *= speed;
         }
-        regenStamina = StartCoroutine(RegenStamina());
+
         if (currentStamina <= 0)
         {
 
         }
     }
 
-    private IEnumerator RegenStamina()
-    {
-        yield return new WaitForSeconds(3);
+    //private IEnumerator RegenStamina()
+    //{
+    //    yield return new WaitForSeconds(3);
 
-        while(currentStamina < maxStamina)
-        {
-            currentStamina += maxStamina / 100;
-            staminaBar.SetStamina(currentStamina);
-            yield return regenStaminaTick;
-        }
-        regenStamina = null;
-    }
+    //    while(currentStamina < maxStamina)
+    //    {
+    //        currentStamina += maxStamina / 100;
+    //        staminaBar.SetStamina(currentStamina);
+    //        yield return regenStaminaTick;
+    //    }
+    //    regenStamina = null;
+    //}
 }
