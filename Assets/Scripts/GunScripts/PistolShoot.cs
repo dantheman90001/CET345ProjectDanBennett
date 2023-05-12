@@ -7,7 +7,7 @@ public class PistolShoot : MonoBehaviour
 {
 
 
-    public float pistolDamage = 10f;
+    public float pistolDamage = 30f;
     public float range = 20f;
     public float fireRate = 2f;
     public float nextFire;
@@ -21,7 +21,7 @@ public class PistolShoot : MonoBehaviour
     
     IEnumerator ShootDelay()
     {
-        Debug.Log("Delaying Shot");
+        
         laserLine.enabled = true;
         yield return shotDuration;
         laserLine.enabled = false;
@@ -50,7 +50,7 @@ public class PistolShoot : MonoBehaviour
 
     void Shoot()
     {
-        Debug.Log("Pistol Shooting!");
+        
 
         RaycastHit hit;
         laserLine.SetPosition(0, pistolStart.position);

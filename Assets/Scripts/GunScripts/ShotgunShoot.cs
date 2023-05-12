@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ShotgunShoot : MonoBehaviour
 {
@@ -9,30 +10,46 @@ public class ShotgunShoot : MonoBehaviour
     public float fireRate = 3f;
     public float nextFire;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.5f);
-    public GameObject shotgunStart;
+    public Transform shotgunStart;
+    public LineRenderer laserLine;
+    public bool isFiring;
+    public int shotgunAmmo;
+    public TMP_Text shotgunAmmoUI;
 
     IEnumerator shotgunShotDelay()
     {
-        Debug.Log("Delaying Shot");
+        laserLine.enabled = true;
         yield return shotDuration;
+        laserLine.enabled = false;
+    }
+
+     void Start()
+    {
+        laserLine = GetComponent<LineRenderer>();
     }
     void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        shotgunAmmoUI.text = shotgunAmmo.ToString();
+        if (Input.GetButton("Fire1") && Time.time > nextFire && !isFiring && shotgunAmmo > 0)
         {
             nextFire = Time.time + fireRate;
+            isFiring = true;
             Shoot();
+            shotgunAmmo--;
+            isFiring = false;
             StartCoroutine(shotgunShotDelay());
         }
     }
 
     void Shoot()
     {
-        Debug.Log("Shotgun Blast");
+        
 
         RaycastHit hit;
+        laserLine.SetPosition(0, shotgunStart.position);
         if (Physics.Raycast(shotgunStart.transform.position, shotgunStart.transform.forward, out hit, range))
         {
+            laserLine.SetPosition(1, hit.point);
             Debug.Log(hit.transform.name);
             SMGEnemyHealth sMGEnemyHealth = hit.transform.GetComponent<SMGEnemyHealth>();
 
@@ -40,6 +57,10 @@ public class ShotgunShoot : MonoBehaviour
             {
                 sMGEnemyHealth.TakeSMGEnemyDamage(shotgunDamage);
             }
+        }
+        else
+        {
+            laserLine.SetPosition(1, shotgunStart.transform.position + (shotgunStart.transform.forward * range));
         }
     }
 }

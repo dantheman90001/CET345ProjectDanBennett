@@ -22,7 +22,7 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
     public NavMeshAgent agent;
 
 
-    public float enemySMGDamage = 20f;
+    public float enemySMGDamage = 40f;
     public float range = 40f;
     public Transform smgStart;
     public LineRenderer laserLine;
@@ -61,7 +61,7 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
     
     void Shoot()
     {
-        Debug.Log("Enemy Shooting!");
+       
         RaycastHit hit;
         laserLine.SetPosition(0, smgStart.position);
 
@@ -69,9 +69,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
         {
             laserLine.SetPosition(1, hit.point);
             Debug.DrawLine(smgStart.transform.position, smgStart.transform.forward, Color.white);
-            Debug.Log(hit.transform.name);
-
+            //Debug.Log(hit.transform.name);
             //ShieldBar shieldBar = hit.transform.GetComponent<ShieldBar>();
+            PlayerHealth playerHealth = hit.transform.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeShieldDamage(enemySMGDamage);
+            }
 
         }
         else
@@ -106,6 +110,7 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
                         Shoot();
                         isFiring = false;
                         StartCoroutine(shotDelay());
+                        
                     }
                     
                 }

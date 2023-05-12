@@ -32,8 +32,7 @@ public class PlayerMovementPC : MonoBehaviour
     public float currentStamina;
     public TMP_Text staminaUI;
 
-    //private WaitForSeconds regenStaminaTick = new WaitForSeconds(0.1f);
-    //private Coroutine regenStamina;
+    
     public StaminaBar staminaBar;
 
     // Start is called before the first frame update
@@ -124,7 +123,7 @@ public class PlayerMovementPC : MonoBehaviour
         currentStamina -= decrease * Time.deltaTime;
         staminaBar.SetStamina(currentStamina);
 
-        //regenStamina = StartCoroutine(RegenStamina());
+        
 
         if (currentStamina != 0)
         {
@@ -133,22 +132,8 @@ public class PlayerMovementPC : MonoBehaviour
             moveDirection *= speed;
         }
 
-        if (currentStamina <= 0)
-        {
-
-        }
+        
     }
 
-    //private IEnumerator RegenStamina()
-    //{
-    //    yield return new WaitForSeconds(3);
-
-    //    while(currentStamina < maxStamina)
-    //    {
-    //        currentStamina += maxStamina / 100;
-    //        staminaBar.SetStamina(currentStamina);
-    //        yield return regenStaminaTick;
-    //    }
-    //    regenStamina = null;
-    //}
+   
 }

@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxShield = 250;
-    public int currentShield;
+    public float currentShield;
     public TMP_Text shieldUI;
 
     private WaitForSeconds regenShieldTick = new WaitForSeconds(0.1f);
@@ -32,10 +32,10 @@ public class PlayerHealth : MonoBehaviour
 
     
 
-    public void TakeShieldDamage(int damage)
+    public void TakeShieldDamage(float damage)
     {
         currentShield -= damage;
-        shieldBar.SetShield(currentShield);
+        shieldBar.SetShield((int)currentShield);
 
         if (regenShield != null)
         {
@@ -44,7 +44,7 @@ public class PlayerHealth : MonoBehaviour
          regenShield = StartCoroutine(RegenShield());
         if (currentShield <= 0)
         {
-
+            SceneManager.LoadScene("GameOverScreen");
         }
     }
 
@@ -66,7 +66,7 @@ public class PlayerHealth : MonoBehaviour
         while(currentShield < maxShield)
         {
             currentShield += maxShield / 100;
-            shieldBar.SetShield(currentShield);
+            shieldBar.SetShield((int)currentShield);
             yield return regenShieldTick;
         }
         regenShield = null;
