@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("Shield Bar")]
     public int maxShield = 250;
     public float currentShield;
     public TMP_Text shieldUI;
@@ -14,11 +16,18 @@ public class PlayerHealth : MonoBehaviour
 
     private Coroutine regenShield;
     public ShieldBar shieldBar;
+
+    [Header("Damage Overlay")]
+    public Image overlay;
+    public float duration;
+    public float fadeSpeed;
+    private float durationTimer;
     // Start is called before the first frame update
     void Start()
     {
         currentShield = maxShield;
-        shieldBar.SetMaxShield(maxShield);      
+        shieldBar.SetMaxShield(maxShield);
+        overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, 0);
     }
 
     private void OnTriggerEnter (Collider collideObject)
@@ -36,6 +45,8 @@ public class PlayerHealth : MonoBehaviour
     {
         currentShield -= damage;
         shieldBar.SetShield((int)currentShield);
+        durationTimer = 0;
+        overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, 0.5f);
 
         if (regenShield != null)
         {
@@ -56,6 +67,20 @@ public class PlayerHealth : MonoBehaviour
         if (currentShield > maxShield)
         {
             currentShield = 250;
+        }
+        if (overlay.color.a > 0)
+        {
+            if (currentShield < 50)
+            {
+                return;
+            }
+            durationTimer += Time.deltaTime;
+            if (durationTimer > duration)
+            {
+                float tempALpha = overlay.color.a;
+                tempALpha -= Time.deltaTime * fadeSpeed;
+                overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, tempALpha);
+            }
         }
     }
 

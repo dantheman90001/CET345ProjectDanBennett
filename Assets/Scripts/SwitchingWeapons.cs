@@ -28,12 +28,19 @@ public class SwitchingWeapons : MonoBehaviour
         {
             Debug.Log("Pistol Equipped!");
             IsLeft = true;
+            pistol.SetActive(true);
+            smg.SetActive(false);
+            shotgun.SetActive(false);
+
             // Pistol
         }
         else if (x == 1)
         {
             Debug.Log("SMG Equipped!");
             IsRight = true;
+            smg.SetActive(true);
+            pistol.SetActive(false);
+            shotgun.SetActive(false);
             // smg
         }
 
@@ -41,7 +48,34 @@ public class SwitchingWeapons : MonoBehaviour
         {
             Debug.Log("Shotgun Equipped!");
             IsDown = true;
+            shotgun.SetActive(true);
+            pistol.SetActive(false);
+            smg.SetActive(false);
             // Shotgun
+        }
+
+        if (Input.GetButton("Shotgun"))
+        {
+            IsDown = true;
+            shotgun.SetActive(true);
+            pistol.SetActive(false);
+            smg.SetActive(false);
+        }
+
+        if (Input.GetButton("SMG"))
+        {
+            IsRight = true;
+            smg.SetActive(true);
+            shotgun.SetActive(false);
+            pistol.SetActive(false);
+        }
+
+        if (Input.GetButton("Pistol"))
+        {
+            IsLeft = true;
+            smg.SetActive(false);
+            shotgun.SetActive(false);
+            pistol.SetActive(true);
         }
     }
 }
