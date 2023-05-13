@@ -57,6 +57,12 @@ public class ShotgunShoot : MonoBehaviour
             {
                 sMGEnemyHealth.TakeSMGEnemyDamage(shotgunDamage);
             }
+
+            SentryHealth sentryHealth = hit.transform.GetComponent<SentryHealth>();
+            if (sentryHealth != null)
+            {
+                sentryHealth.TakeSentryDamage(shotgunDamage);
+            }
         }
         else
         {

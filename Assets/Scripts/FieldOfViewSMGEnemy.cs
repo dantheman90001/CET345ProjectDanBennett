@@ -20,10 +20,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
     public Transform player;
     public NavMeshAgent agent;
-    GameObject currentWaypoint;
-    GameObject previousWaypoint;
-    GameObject[] allWaypoints;
-    bool travelling;
+    
+
+
+    public Transform[] wayPoints;
+    public float speed;
+    private int wayPointIndex;
+    private float dist; 
 
     public float enemySMGDamage = 40f;
     public float range = 40f;
@@ -38,9 +41,9 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
     {
         playerRef = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
-        allWaypoints = GameObject.FindGameObjectsWithTag("waypoint");
-        currentWaypoint = GetRandomWaypoint();
-        SetDesttination();
+        wayPointIndex = 0;
+        transform.LookAt(wayPoints[wayPointIndex].position); 
+        //allWaypoints = GameObject.FindGameObjectsWithTag("waypoint");
         StartCoroutine(FOVRountine());
         laserLine = GetComponent<LineRenderer>();
        
@@ -48,13 +51,31 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
      void Update()
     {
-        if (travelling && agent.remainingDistance <= 1f)
+        dist = Vector3.Distance(transform.position, wayPoints[wayPointIndex].position);
+        if (dist < 1f)
         {
-            Debug.Log("Stop Travelling");
-            travelling = false;
-            SetDesttination();
+            IncreaseIndex();
         }
+        Patrol(); 
     }
+
+    
+
+    
+    void Patrol()
+    {
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+    }
+
+    void IncreaseIndex()
+    {
+        wayPointIndex++;
+        if (wayPointIndex >= wayPoints.Length)
+        {
+            wayPointIndex = 0;
+        }
+        transform.LookAt(wayPoints[wayPointIndex].position);
+    } 
 
     private IEnumerator shotDelay()
     {
@@ -74,29 +95,9 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
         }
     }
 
-    GameObject GetRandomWaypoint()
-    {
-        if (allWaypoints.Length == 0)
-        {
-            return null;
-        }
-        else
-        {
-            int index = Random.Range(0, allWaypoints.Length);
-            return allWaypoints[index];
-        }
-    }
+    
 
-    void SetDesttination()
-    {
-        previousWaypoint = currentWaypoint;
-        currentWaypoint = GetRandomWaypoint();
-
-        Vector3 targetVector = currentWaypoint.transform.position;
-        agent.SetDestination(targetVector);
-        Debug.Log("Travelling");
-        travelling = true;
-    }
+  
    
     void Shoot()
     {
@@ -162,6 +163,7 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
             else
             {
                 canSeePlayer = false;
+                
             }
         }
         else if (canSeePlayer)

@@ -64,6 +64,12 @@ public class SMGShoot : MonoBehaviour
             {
                 sMGEnemyHealth.TakeSMGEnemyDamage(SMGDamage);
             }
+
+            SentryHealth sentryHealth = hit.transform.GetComponent<SentryHealth>();
+            if (sentryHealth != null)
+            {
+                sentryHealth.TakeSentryDamage(SMGDamage);
+            }
         }
         else
         {

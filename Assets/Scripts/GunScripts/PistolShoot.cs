@@ -17,6 +17,7 @@ public class PistolShoot : MonoBehaviour
     public bool isFiring;
     public int pistolAmmo;
     public TMP_Text pistolAmmoUI;
+    public AudioSource shootingSound;
 
     
     IEnumerator ShootDelay()
@@ -30,6 +31,7 @@ public class PistolShoot : MonoBehaviour
      void Start()
     {
         laserLine = GetComponent<LineRenderer>();
+        shootingSound = GetComponent<AudioSource>();
         
     }
     // Update is called once per frame
@@ -40,6 +42,7 @@ public class PistolShoot : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
             isFiring = true;
+            shootingSound.Play();
             Shoot();
             pistolAmmo--;
             isFiring = false;
@@ -71,7 +74,11 @@ public class PistolShoot : MonoBehaviour
                 sMGEnemyHealth.TakeSMGEnemyDamage(pistolDamage);
             }
 
-
+            SentryHealth sentryHealth = hit.transform.GetComponent<SentryHealth>();
+            if (sentryHealth != null)
+            {
+                sentryHealth.TakeSentryDamage(pistolDamage);
+            }
         }
         else
         {
