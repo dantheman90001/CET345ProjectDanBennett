@@ -14,6 +14,7 @@ public class ShotgunShoot : MonoBehaviour
     public LineRenderer laserLine;
     public bool isFiring;
     public int shotgunAmmo;
+    public int maxAmmo = 99;
     public TMP_Text shotgunAmmoUI;
     public AudioSource shootingSound;
 
@@ -41,6 +42,15 @@ public class ShotgunShoot : MonoBehaviour
             shotgunAmmo--;
             isFiring = false;
             StartCoroutine(shotgunShotDelay());
+        }
+    }
+
+    public void IncreaseAmmo(int increaseAmount)
+    {
+        shotgunAmmo += increaseAmount;
+        if (shotgunAmmo > maxAmmo)
+        {
+            shotgunAmmo = maxAmmo;
         }
     }
 

@@ -16,6 +16,7 @@ public class PistolShoot : MonoBehaviour
     public LineRenderer laserLine;
     public bool isFiring;
     public int pistolAmmo;
+    public int maxAmmo = 99;
     public TMP_Text pistolAmmoUI;
     public AudioSource shootingSound;
 
@@ -48,6 +49,15 @@ public class PistolShoot : MonoBehaviour
             isFiring = false;
             StartCoroutine(ShootDelay());
 
+        }
+    }
+
+    public void IncreaseAmmo(int increaseAmount)
+    {
+        pistolAmmo += increaseAmount;
+        if (pistolAmmo > maxAmmo)
+        {
+            pistolAmmo = maxAmmo;
         }
     }
 

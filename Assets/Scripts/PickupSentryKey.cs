@@ -7,10 +7,18 @@ public class PickupSentryKey : MonoBehaviour
     public GameObject sentryDoorColliderhere;
     public GameObject sentryKeyGone;
     public bool pickingUpKey;
+    public Animation blockDoor;
+    public GameObject blockedDoor;
 
     // Update is called once per frame
 
-     void OnTriggerStay(Collider collideObject)
+     void Start()
+    {
+        blockDoor = blockedDoor.GetComponent<Animation>();
+        blockDoor.Stop();
+    }
+
+    void OnTriggerStay(Collider collideObject)
     {
         if (collideObject.gameObject.name == "Player")
         {
@@ -19,6 +27,7 @@ public class PickupSentryKey : MonoBehaviour
                 Debug.Log("Interacted");
                 sentryDoorColliderhere.GetComponent<BoxCollider>().enabled = true;
                 sentryKeyGone.SetActive(false);
+                blockDoor.Play();
             }
         }
     }

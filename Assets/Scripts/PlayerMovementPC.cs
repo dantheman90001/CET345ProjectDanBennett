@@ -30,7 +30,7 @@ public class PlayerMovementPC : MonoBehaviour
 
     public int maxStamina = 100;
     public float currentStamina;
-    public TMP_Text staminaUI;
+    public TextMeshProUGUI staminaUI;
 
     
     public StaminaBar staminaBar;
@@ -41,11 +41,13 @@ public class PlayerMovementPC : MonoBehaviour
         currentStamina = maxStamina;
         staminaBar.SetMaxStamina(maxStamina);
         controller = GetComponent<CharacterController>();
+        staminaUI.GetComponent<TextMeshProUGUI>().text = "" + currentStamina;
     }
 
     // Update is called once per frame
     void Update()
     {
+        staminaUI.text = currentStamina.ToString();
         Grounded = controller.isGrounded;
         if (sprintCooldownTimer > 0)
         {

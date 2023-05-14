@@ -10,7 +10,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Shield Bar")]
     public int maxShield = 250;
     public float currentShield;
-    public TMP_Text shieldUI;
+    public TextMeshProUGUI shieldUI;
 
     private WaitForSeconds regenShieldTick = new WaitForSeconds(0.1f);
 
@@ -28,6 +28,7 @@ public class PlayerHealth : MonoBehaviour
         currentShield = maxShield;
         shieldBar.SetMaxShield(maxShield);
         overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, 0);
+        shieldUI.GetComponent<TextMeshProUGUI>().text = "" + currentShield;
     }
 
     private void OnTriggerEnter (Collider collideObject)
@@ -62,6 +63,7 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        shieldUI.text = currentShield.ToString();
         maxShield = Mathf.Clamp(maxShield, 1, 250);
 
         if (currentShield > maxShield)

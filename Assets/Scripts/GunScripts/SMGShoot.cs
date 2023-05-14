@@ -18,6 +18,7 @@ public class SMGShoot : MonoBehaviour
     public LineRenderer laserline;
     public bool isFiring;
     public int smgAmmo;
+    public int maxAmmo = 99;
     public TMP_Text smgAmmoUI;
     public AudioSource shootingSound;
    
@@ -46,6 +47,15 @@ public class SMGShoot : MonoBehaviour
             smgAmmo--;
             isFiring = false;
             StartCoroutine(shotDelay());
+        }
+    }
+
+    public void IncreaseAmmo(int increaseAmount)
+    {
+        smgAmmo += increaseAmount;
+        if (smgAmmo > maxAmmo)
+        {
+            smgAmmo = maxAmmo;
         }
     }
 
