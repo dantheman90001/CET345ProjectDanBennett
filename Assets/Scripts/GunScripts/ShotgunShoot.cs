@@ -15,6 +15,7 @@ public class ShotgunShoot : MonoBehaviour
     public bool isFiring;
     public int shotgunAmmo;
     public TMP_Text shotgunAmmoUI;
+    public AudioSource shootingSound;
 
     IEnumerator shotgunShotDelay()
     {
@@ -26,6 +27,7 @@ public class ShotgunShoot : MonoBehaviour
      void Start()
     {
         laserLine = GetComponent<LineRenderer>();
+        shootingSound = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -34,6 +36,7 @@ public class ShotgunShoot : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
             isFiring = true;
+            shootingSound.Play();
             Shoot();
             shotgunAmmo--;
             isFiring = false;

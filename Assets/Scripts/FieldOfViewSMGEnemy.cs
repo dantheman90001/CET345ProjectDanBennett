@@ -20,13 +20,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
 
     public Transform player;
     public NavMeshAgent agent;
-    
+
 
 
     public Transform[] wayPoints;
     public float speed;
     private int wayPointIndex;
-    private float dist; 
+    private float dist;
 
     public float enemySMGDamage = 40f;
     public float range = 40f;
@@ -42,11 +42,27 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
         playerRef = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         wayPointIndex = 0;
-        transform.LookAt(wayPoints[wayPointIndex].position); 
+        transform.LookAt(wayPoints[wayPointIndex].position);
+
         //allWaypoints = GameObject.FindGameObjectsWithTag("waypoint");
         StartCoroutine(FOVRountine());
         laserLine = GetComponent<LineRenderer>();
        
+    }
+
+    void Patrol()
+    {
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+    }
+
+    void IncreaseIndex()
+    {
+        wayPointIndex++;
+        if(wayPointIndex >= wayPoints.Length)
+        {
+            wayPointIndex = 0;
+        }
+        transform.LookAt(wayPoints[wayPointIndex].position);
     }
 
      void Update()
@@ -56,26 +72,13 @@ public class FieldOfViewSMGEnemy : MonoBehaviour
         {
             IncreaseIndex();
         }
-        Patrol(); 
+        Patrol();
     }
 
     
 
     
-    void Patrol()
-    {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
-    }
-
-    void IncreaseIndex()
-    {
-        wayPointIndex++;
-        if (wayPointIndex >= wayPoints.Length)
-        {
-            wayPointIndex = 0;
-        }
-        transform.LookAt(wayPoints[wayPointIndex].position);
-    } 
+    
 
     private IEnumerator shotDelay()
     {

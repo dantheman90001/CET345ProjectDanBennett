@@ -19,6 +19,7 @@ public class SMGShoot : MonoBehaviour
     public bool isFiring;
     public int smgAmmo;
     public TMP_Text smgAmmoUI;
+    public AudioSource shootingSound;
    
 
     IEnumerator shotDelay()
@@ -31,6 +32,7 @@ public class SMGShoot : MonoBehaviour
      void Start()
     {
         laserline = GetComponent<LineRenderer>();
+        shootingSound = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -39,6 +41,7 @@ public class SMGShoot : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
             isFiring = true;
+            shootingSound.Play();
             Shoot();
             smgAmmo--;
             isFiring = false;
